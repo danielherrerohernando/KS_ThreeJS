@@ -1,6 +1,8 @@
 let camera, scene, renderer;
 let geometry, material, mesh, mesh2, mesh3;
 
+let pieces = [];
+
 init();
 animate();
 
@@ -19,6 +21,7 @@ function init() {
   mesh3 = new THREE.Mesh(geometry, material);
   mesh3.position.x = 0.5;
   scene.add(mesh, mesh2, mesh3);
+  pieces.push(mesh, mesh2, mesh3);
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -28,8 +31,10 @@ function init() {
 function animate() {
   requestAnimationFrame(animate);
 
-  mesh.rotation.x += 0.01;
-  mesh.rotation.y += 0.02;
+  pieces.forEach(m => {
+    m.rotation.x += 0.04 * Math.random();
+    m.rotation.y += 0.03 * Math.random();
+  });
 
   renderer.render(scene, camera);
 }
