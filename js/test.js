@@ -9,7 +9,8 @@ animate();
 
 function init() {
   camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
-  camera.position.z = 3;
+  camera.position.set(0, 0, 5);
+  camera.lookAt(0, 0, 0);
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0xf2f2f2);
@@ -18,10 +19,14 @@ function init() {
   material = new THREE.MeshNormalMaterial();
 
   for (let i = 0; i < 10; i++) {
-    pieces.push(new THREE.Mesh(geometry, material));
-    pieces[i].position.x = i / 2 - 2.5;
-    pieces[i].position.y = Math.sin(i / 2 - 2.5);
-    scene.add(pieces[i]);
+    pieces.push([]);
+    for (let j = 0; j < 10; j++) {
+      pieces[i].push(new THREE.Mesh(geometry, material));
+      pieces[i][j].position.x = j / 2 - 2.5;
+      pieces[i][j].position.y = i / 2 - 2.5;
+      pieces[i][j].position.z = Math.sin(j / 2 - 2.5);
+      scene.add(pieces[i][j]);
+    }
   }
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -31,12 +36,14 @@ function init() {
 
 function animate() {
   requestAnimationFrame(animate);
-  virtualTime += 0.006;
+  virtualTime += 0.02;
 
-  pieces.forEach(m => {
-    m.rotation.x += 0.04 * Math.random();
-    m.rotation.y += 0.03 * Math.random();
-    m.position.y = Math.sin(m.position.x / 2 - 2.5 + virtualTime);
+  pieces.forEach(line => {
+    line.forEach(m => {
+      m.rotation.x += 0.04 * Math.random();
+      m.rotation.y += 0.03 * Math.random();
+      m.position.z = Math.sin((m.position.y + m.position.x) / 2 - 2.5 + virtualTime);
+    });
   });
 
   renderer.render(scene, camera);
