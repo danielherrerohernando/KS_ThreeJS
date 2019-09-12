@@ -4,6 +4,8 @@ let geometry, material, mesh, mesh2, mesh3;
 let pieces = [];
 let virtualTime = 0;
 
+let controls;
+
 init();
 animate();
 
@@ -31,7 +33,10 @@ function init() {
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
+
   document.body.appendChild(renderer.domElement);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
 }
 
 function animate() {
