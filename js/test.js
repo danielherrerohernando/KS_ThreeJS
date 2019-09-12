@@ -1,10 +1,6 @@
-let camera, scene, renderer;
-let geometry, material, mesh, mesh2, mesh3;
-
-let pieces = [];
 let virtualTime = 0;
-
-let controls;
+let renderer, scene, camera;
+const boxes = [];
 
 init();
 animate();
@@ -15,20 +11,18 @@ function init() {
   camera.lookAt(0, 0, 0);
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf2f2f2);
+  scene.background = new THREE.Color(0x000000);
 
-  geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+  const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 
-  new Array(10).fill("").forEach((e, i) => {
-    pieces.push([]);
-    for (let j = 0; j < 10; j++) {
-      const value = 20 * j;
-      const material = new THREE.MeshBasicMaterial({ color: `hsl(${value},50%,70%)`, opacity: 0.8, transparent: true });
-      pieces[i].push(new THREE.Mesh(geometry, material));
-      pieces[i][j].position.x = j / 2 - 2.5;
-      pieces[i][j].position.y = i / 2 - 2.5;
-      pieces[i][j].position.z = Math.sin(j / 2 - 2.5) + Math.random() * 2;
-      scene.add(pieces[i][j]);
+  new Array(30).fill("").forEach((e, i) => {
+    boxes[i] = [];
+    for (let j = 0; j < 30; j++) {
+      const material = new THREE.MeshBasicMaterial({ transparent: true });
+      boxes[i][j] = new THREE.Mesh(geometry, material);
+      boxes[i][j].position.x = j / 2 - 7.5;
+      boxes[i][j].position.y = i / 2 - 7.5;
+      scene.add(boxes[i][j]);
     }
   });
 
@@ -37,21 +31,22 @@ function init() {
 
   document.body.appendChild(renderer.domElement);
 
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
 }
 
 function animate() {
-  requestAnimationFrame(animate);
   virtualTime += 0.05;
 
-  pieces.forEach(line => {
+  boxes.forEach(line => {
     line.forEach(({ rotation, position, material }) => {
       rotation.x += 0.05 * (position.z + 1);
       rotation.y += 0.1 * (position.z + 1);
       position.z = Math.sin((position.y + position.x) / 2 - 2.5 + virtualTime);
       material.color = new THREE.Color(`hsl(${(position.z + 1) * 200},50%,70%)`);
+      material.opacity = (position.z + 1.1) / 2.1;
     });
   });
+  requestAnimationFrame(animate);
 
   renderer.render(scene, camera);
 }
