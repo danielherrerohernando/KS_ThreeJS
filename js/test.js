@@ -19,7 +19,7 @@ function init() {
 
   geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 
-  for (let i = 0; i < 10; i++) {
+  new Array(10).fill("").forEach((e, i) => {
     pieces.push([]);
     for (let j = 0; j < 10; j++) {
       const value = 20 * j;
@@ -27,10 +27,10 @@ function init() {
       pieces[i].push(new THREE.Mesh(geometry, material));
       pieces[i][j].position.x = j / 2 - 2.5;
       pieces[i][j].position.y = i / 2 - 2.5;
-      pieces[i][j].position.z = Math.sin(j / 2 - 2.5);
+      pieces[i][j].position.z = Math.sin(j / 2 - 2.5) + Math.random() * 2;
       scene.add(pieces[i][j]);
     }
-  }
+  });
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -42,12 +42,12 @@ function init() {
 
 function animate() {
   requestAnimationFrame(animate);
-  virtualTime += 0.02;
+  virtualTime += 0.05;
 
   pieces.forEach(line => {
     line.forEach(({ rotation, position, material }) => {
-      rotation.x += 0.04 * Math.random();
-      rotation.y += 0.03 * Math.random();
+      rotation.x += 0.05 * (position.z + 1);
+      rotation.y += 0.1 * (position.z + 1);
       position.z = Math.sin((position.y + position.x) / 2 - 2.5 + virtualTime);
       material.color = new THREE.Color(`hsl(${(position.z + 1) * 200},50%,70%)`);
     });
