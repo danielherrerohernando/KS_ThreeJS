@@ -18,11 +18,12 @@ function init() {
   scene.background = new THREE.Color(0xf2f2f2);
 
   geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-  material = new THREE.MeshNormalMaterial();
 
   for (let i = 0; i < 10; i++) {
     pieces.push([]);
     for (let j = 0; j < 10; j++) {
+      const value = 20 * j;
+      const material = new THREE.MeshBasicMaterial({ color: `hsl(${value},50%,70%)`, opacity: 0.8, transparent: true });
       pieces[i].push(new THREE.Mesh(geometry, material));
       pieces[i][j].position.x = j / 2 - 2.5;
       pieces[i][j].position.y = i / 2 - 2.5;
@@ -44,10 +45,11 @@ function animate() {
   virtualTime += 0.02;
 
   pieces.forEach(line => {
-    line.forEach(m => {
-      m.rotation.x += 0.04 * Math.random();
-      m.rotation.y += 0.03 * Math.random();
-      m.position.z = Math.sin((m.position.y + m.position.x) / 2 - 2.5 + virtualTime);
+    line.forEach(({ rotation, position, material }) => {
+      rotation.x += 0.04 * Math.random();
+      rotation.y += 0.03 * Math.random();
+      position.z = Math.sin((position.y + position.x) / 2 - 2.5 + virtualTime);
+      material.color = new THREE.Color(`hsl(${(position.z + 1) * 200},50%,70%)`);
     });
   });
 
